@@ -1,4 +1,3 @@
-// handlers/auth_handler.go
 package handlers
 
 import (
@@ -33,12 +32,21 @@ func (ah *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	if ah.authService.Authenticate(credentials.Email, credentials.Password) {
+	var user = ah.authService.Authenticate(credentials.Email, credentials.Password)
+
+	if user != 0 {
 		c.JSON(http.StatusOK, models.GenericResponse{
 			APIVersion: "1.0",
 			StatusCode: http.StatusOK,
 			Message:    "Login successful",
-			Result:     gin.H{"error": nil, "result": "Welcome " + credentials.Email + "!"},
+			Result:     gin.H{"error": nil, "result": gin.H{"message": "Welcome " + credentials.Email + "!", "userId": user}},
+		})
+	} else if user == -1 {
+		c.JSON(http.StatusInternalServerError, models.GenericResponse{
+			APIVersion: "1.0",
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Server error",
+			Result:     gin.H{"error": "An error ocurred when validate the user", "result": nil},
 		})
 	} else {
 		c.JSON(http.StatusUnauthorized, models.GenericResponse{

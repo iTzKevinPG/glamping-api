@@ -52,10 +52,14 @@ func main() {
 
 	r.Use(corsMiddleware())
 	authService := services.NewAuthService(db)
+	userService := services.NewUserService(db)
 	authHandler := handlers.NewAuthHandler(authService)
+	userHandler := handlers.NewUserHandler(userService)
 
 	r.POST("/login", authHandler.Login)
 	r.POST("/register", authHandler.Register)
+	r.GET("/user", userHandler.GetUser)
+	r.PUT("/user", userHandler.UpdateUser)
 
 	r.Run("localhost:8080")
 }

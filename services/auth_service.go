@@ -16,24 +16,29 @@ func NewAuthService(db *sql.DB) *AuthService {
 	}
 }
 
-func (as *AuthService) Authenticate(email, password string) bool {
+func (as *AuthService) Authenticate(email, password string) int {
 	var storedPassword string
-	err := as.db.QueryRow("SELECT password FROM users WHERE email = ?", email).Scan(&storedPassword)
+	var userID int
+	err := as.db.QueryRow("SELECT password, id FROM users WHERE email = ?", email).Scan(&storedPassword, &userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			log.Println("Usuario no encontrado")
-			return false
+			return 0
 		}
 		log.Println("Error al consultar la base de datos:", err)
-		return false
+		return -1
 	}
 
-	return password == storedPassword
+	if password == storedPassword {
+		return userID
+	}
+
+	return 0
 }
 
 func (as *AuthService) Registration(payload models.RegisterCredentials) int {
 	var exists bool
-	err := as.db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)", payload.Email).Scan(&exists)
+	err := as.db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE email = ? OR username = ?)", payload.Email, payload.FullName).Scan(&exists)
 
 	if err != nil {
 		log.Println("Error al consultar la base de datos:", err)
@@ -49,7 +54,7 @@ func (as *AuthService) Registration(payload models.RegisterCredentials) int {
 			payload.Password)
 
 		if errI != nil {
-			log.Println("Error al insertar el usuario:", err)
+			log.Println("Error al insertar el usuario:", payload)
 			return -1
 		} else {
 			return 1

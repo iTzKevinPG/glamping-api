@@ -1,3 +1,9 @@
+CREATE TABLE IF NOT EXISTS payMethods (
+    id INT AUTO_INCREMENT,
+    code VARCHAR(255) UNIQUE NOT NULL,
+    PRIMARY KEY (id)
+);
+
 -- Crear la tabla de usuarios
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT,
@@ -6,7 +12,9 @@ CREATE TABLE IF NOT EXISTS users (
     address TEXT,
     phone VARCHAR(20),
     password VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
+    payMethodId INT DEFAULT NULL, 
+    PRIMARY KEY (id),
+    FOREIGN KEY (payMethodId) REFERENCES payMethods(id)
 );
 
 -- Agregar un índice en el campo username para acelerar las búsquedas
