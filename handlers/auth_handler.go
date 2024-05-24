@@ -49,9 +49,9 @@ func (ah *AuthHandler) Login(c *gin.Context) {
 			Result:     gin.H{"error": "An error ocurred when validate the user", "result": nil},
 		})
 	} else {
-		c.JSON(http.StatusUnauthorized, models.GenericResponse{
+		c.JSON(http.StatusNotFound, models.GenericResponse{
 			APIVersion: "1.0",
-			StatusCode: http.StatusUnauthorized,
+			StatusCode: http.StatusNotFound,
 			Message:    "Invalid credentials",
 			Result:     gin.H{"error": "Invalid credentials", "result": nil},
 		})

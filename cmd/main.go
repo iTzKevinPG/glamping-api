@@ -18,6 +18,8 @@ import (
 
 var allowedOrigins = []string{
 	"http://127.0.0.1:8081",
+	"http://127.0.0.1:3000",
+	"http://localhost:3000",
 }
 
 func main() {
