@@ -19,7 +19,7 @@ func NewUserService(db *sql.DB) *UserService {
 func (as *UserService) GetUserById(id int) *models.UserResponse {
 	var user models.UserResponse
 	err := as.db.QueryRow("SELECT * FROM users WHERE id = ?", id).Scan(
-		&user.Id, &user.FullName, &user.Email, &user.Address, &user.Phone, &user.Password, &user.PayMethodId,
+		&user.Id, &user.FullName, &user.Email, &user.Address, &user.Phone, &user.Password, &user.PayMethodId, &user.BirthDate,
 	)
 
 	if err != nil {
@@ -35,13 +35,13 @@ func (as *UserService) GetUserById(id int) *models.UserResponse {
 }
 
 func (as *UserService) UpdateUserById(user models.UpdateUser) int {
-	stmt, err := as.db.Prepare("UPDATE users SET username=?, email=?, address=?, phone=?, password=?, payMethodId=? WHERE id=?")
+	stmt, err := as.db.Prepare("UPDATE users SET username=?, email=?, address=?, phone=?, password=?, payMethodId=?, birthDate=? WHERE id=?")
 	if err != nil {
 		log.Println("Error preparing update statement:", err)
 		return -1
 	}
 
-	result, err := stmt.Exec(user.FullName, user.Email, user.Address, user.Phone, user.Password, user.PayMethodId, user.Id)
+	result, err := stmt.Exec(user.FullName, user.Email, user.Address, user.Phone, user.Password, user.PayMethodId, user.BirthDate, user.Id)
 	if err != nil {
 		log.Println("Error updating user:", err)
 		return -1

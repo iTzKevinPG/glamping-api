@@ -21,4 +21,5 @@ type UpdateUser struct {
 	Phone       string `json:"phone"`
 	Password    string `json:"password"`
 	PayMethodId int    `json:"payMethodId"`
+	BirthDate   string `json:"birthDate"`
 }
